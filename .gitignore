@@ -1,7 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
-*.class
+*$py.class
 *.so
 .Python
 env/
@@ -9,14 +9,14 @@ venv/
 ENV/
 .env
 
-# Data files & large datasets (can be downloaded from Kaggle)
+# Raw Datasets (Datasets can be downloaded from Kaggle)
 *.csv
 *.parquet
 *.zip
 *.tar.gz
 cleaned_data/
 project/
-olist-ecommerce-project/data/raw/
+data/
 
 # OS / IDE
 .DS_Store
