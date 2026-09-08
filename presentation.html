@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olist E-Commerce Analytics Presentation | عرض تحليل البيانات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b1120;
+      --bg-surface: #1e293b;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --border-color: #334155;
+      --accent-blue: #0284c7;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', 'Inter', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Presentation Header */
+    header {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--accent-cyan);
+    }
+
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border: none;
+      color: white;
+    }
+
+    .slide-counter {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    /* Slide Deck Container */
+    .deck-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1180px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 2.5rem 3rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .slide-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(2, 132, 199, 0.15);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(2, 132, 199, 0.3);
+      margin-bottom: 0.75rem;
+    }
+
+    .slide-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .slide-subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent-cyan);
+      transform: translateY(-3px);
+    }
+
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-value {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .val-blue { color: var(--accent-cyan); }
+    .val-green { color: var(--accent-green); }
+    .val-amber { color: var(--accent-amber); }
+    .val-red { color: var(--accent-red); }
+
+    /* Bullet Lists */
+    .bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .bullet-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+    }
+
+    .bullet-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      text-align: right;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.8);
+      color: var(--accent-cyan);
+      padding: 0.85rem 1rem;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      color: #cbd5e1;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    /* Charts Container */
+    .chart-wrapper {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-color);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span>📊</span>
+      <span>Olist E-Commerce Analytics | عرض تحليل البيانات التنفيذي</span>
+    </div>
+    <div class="nav-controls">
+      <button class="btn" id="prevBtn" onclick="prevSlide()">◀ السابق</button>
+      <span class="slide-counter" id="slideNum">شريحة 1 من 9</span>
+      <button class="btn btn-primary" id="nextBtn" onclick="nextSlide()">التالي ▶</button>
+    </div>
+  </header>
+
+  <div class="deck-container">
+
+    <!-- SLIDE 1: Title -->
+    <div class="slide active" id="slide-1">
+      <div class="slide-tag">Executive Presentation | عرض الأعمال</div>
+      <h1 class="slide-title" style="font-size: 2.8rem; margin-top: 1rem;">تحليل بيانات التجارة الإلكترونية لمنصة Olist</h1>
+      <p class="slide-subtitle" style="font-size: 1.3rem;">فهم شامل لقصة البيانات، مؤشرات الأداء، سلوكيات المشترين، وحلول مشاكل التوصيل والتقييمات</p>
+      
+      <div class="grid-3" style="margin-top: 2rem;">
+        <div class="card">
+          <div class="card-title">📦 حجم البيانات</div>
+          <div class="card-value val-blue">100K+</div>
+          <div class="card-desc">طلب تجاري متكامل عبر 9 جداول مترابطة</div>
+        </div>
+        <div class="card">
+          <div class="card-title">💰 إجمالي المبيعات</div>
+          <div class="card-value val-green">R$ 15.4M</div>
+          <div class="card-desc">إجمالي إيرادات المبيعات والشحن المحققة</div>
+        </div>
+        <div class="card">
+          <div class="card-title">⭐ متوسط الرضا</div>
+          <div class="card-value val-amber">4.16 / 5.0</div>
+          <div class="card-desc">تقييم المشترين العام بعد استلام الشحنات</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: What is the Data? -->
+    <div class="slide" id="slide-2">
+      <div class="slide-tag">فهم البيانات وقصتها</div>
+      <h2 class="slide-title">ما هي بيانات Olist وكيف تم تنظيفها؟</h2>
+      <p class="slide-subtitle">Olist هي منصة تجارة إلكترونية كبرى في البرازيل تجمع بين آلاف التجار وملايين المتسوقين.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 1rem;">🔗 الجداول الـ 9 المترابطة:</h3>
+          <ul class="bullet-list">
+            <li class="bullet-item"><span class="bullet-icon">📦</span> <strong>Orders:</strong> تتبع مراحل الطلب من الشراء حتى التسليم.</li>
+            <li class="bullet-item"><span class="bullet-icon">🏷️</span> <strong>Order Items & Products:</strong> المنتجات المباعة، أسعارها، وتصنيفاتها.</li>
+            <li class="bullet-item"><span class="bullet-icon">💳</span> <strong>Payments:</strong> طرق الدفع، عدد الأقساط، وقيمة كل دفعة.</li>
+            <li class="bullet-item"><span class="bullet-icon">⭐</span> <strong>Reviews:</strong> درجات تقييم العملاء (1-5 نجوم) ورسائل الشكاوى.</li>
+            <li class="bullet-item"><span class="bullet-icon">📍</span> <strong>Customers & Sellers:</strong> المدن والولايات والموقع الجغرافي.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--accent-green); margin-bottom: 1rem;">🧹 ما قمنا به في خطوة التنظيف (Python ETL):</h3>
+          <ul class="bullet-list">
+            <li class="bullet-item"><span class="bullet-icon">✔</span> تحويل جميع التواريخ واستخراج أزمنة الشحن والتوصيل.</li>
+            <li class="bullet-item"><span class="bullet-icon">✔</span> ترجمة 74 فئة منتجات من البرتغالية إلى الإنجليزية.</li>
+            <li class="bullet-item"><span class="bullet-icon">✔</span> معالجة القيم المفقودة وإزالة طرق الدفع غير المعرفة.</li>
+            <li class="bullet-item"><span class="bullet-icon">✔</span> دمج الجداول في Master Dataset موحد وشيت إكسيل تنفيذي.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Executive KPI Dashboard -->
+    <div class="slide" id="slide-3">
+      <div class="slide-tag">لوحة المؤشرات التنفيذية</div>
+      <h2 class="slide-title">مؤشرات الأداء الرئيسية (Vital KPIs)</h2>
+      <p class="slide-subtitle">نظرة شاملة على نبض وصحة الأعمال لمنصة التجارة الإلكترونية</p>
+
+      <div class="grid-3" style="margin-bottom: 1.5rem;">
+        <div class="card">
+          <div class="card-title">💰 إجمالي الإيرادات (Total GMV)</div>
+          <div class="card-value val-blue">R$ 15,419,773</div>
+          <div class="card-desc">إجمالي مبيعات الطلبات المسلمة بنجاح</div>
+        </div>
+        <div class="card">
+          <div class="card-title">📦 الطلبات المسلمة (Delivered Orders)</div>
+          <div class="card-value">96,478</div>
+          <div class="card-desc">97% نسبة إتمام وتسليم الطلبات بالكامل</div>
+        </div>
+        <div class="card">
+          <div class="card-title">👥 عدد العملاء الفريدين</div>
+          <div class="card-value">96,096</div>
+          <div class="card-desc">قاعدة مستهلكين واسعة ونمو مستمر</div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">🛒 متوسط قيمة السلة (AOV)</div>
+          <div class="card-value val-cyan">R$ 159.83</div>
+          <div class="card-desc">متوسط إنفاق العميل في الطلب الواحد</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🚚 متوسط سرعة التوصيل</div>
+          <div class="card-value val-amber">12.6 يوم</div>
+          <div class="card-desc">المدة الزمنية من ضغط زر الشراء للباب</div>
+        </div>
+        <div class="card">
+          <div class="card-title">⏱️ نسبة الالتزام بالموعد</div>
+          <div class="card-value val-green">91.9%</div>
+          <div class="card-desc">وصلت الشحنات في الموعد التقديري أو قبله</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Sales Growth -->
+    <div class="slide" id="slide-4">
+      <div class="slide-tag">التقرير 1 | المبيعات والنمو</div>
+      <h2 class="slide-title">حركة ونمو المبيعات الشهرية (2017 - 2018)</h2>
+      <p class="slide-subtitle">تضاعف المبيعات بأكثر من 8 أضعاف خلال 18 شهراً مع قفزة البلاك فرايداي</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="chart-wrapper">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 0.8rem;">💡 ملاحظات الأداء المالي:</h3>
+          <ul class="bullet-list">
+            <li class="bullet-item"><span class="bullet-icon">📈</span> <strong>نمو هائل:</strong> قفزت المبيعات من 750 طلب (يناير 2017) إلى أكثر من 7,000 طلب شهرياً في 2018.</li>
+            <li class="bullet-item"><span class="bullet-icon">🔥</span> <strong>طفرة نوفمبر 2017:</strong> سجلت المنصة مبيعات قياسية بلغت 1.15 مليون ريال بفضل عروض Black Friday.</li>
+            <li class="bullet-item"><span class="bullet-icon">🚚</span> <strong>حصة الشحن:</strong> يدفع العميل 15% إلى 17% إضافية فوق سعر المنتجات لتغطية تكاليف الشحن.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Top Categories -->
+    <div class="slide" id="slide-5">
+      <div class="slide-tag">التقرير 2 | تصنيفات المنتجات</div>
+      <h2 class="slide-title">أعلى فئات المنتجات مبيعاً وإيراداً</h2>
+      <p class="slide-subtitle">قطاعات الجمال والساعات والإلكترونيات والمفروشات تقود قاطرة الأرباح</p>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>فئة المنتج (Category)</th>
+              <th>القطع المباعة</th>
+              <th>إجمالي الإيرادات</th>
+              <th>الحصة من المبيعات %</th>
+              <th>متوسط السعر</th>
+              <th>تقييم المشترين</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Health & Beauty (الصحة والجمال)</strong></td>
+              <td>9,670</td>
+              <td>R$ 1,258,681</td>
+              <td>9.3%</td>
+              <td>R$ 130.16</td>
+              <td>4.14 ⭐</td>
+            </tr>
+            <tr>
+              <td><strong>Watches & Gifts (الساعات والهدايا)</strong></td>
+              <td>5,624</td>
+              <td>R$ 1,205,005</td>
+              <td>8.9%</td>
+              <td>R$ 201.99</td>
+              <td>4.02 ⭐</td>
+            </tr>
+            <tr>
+              <td><strong>Bed Bath Table (المفروشات والمنزل)</strong></td>
+              <td>11,115</td>
+              <td>R$ 1,036,988</td>
+              <td>7.7%</td>
+              <td>R$ 93.30</td>
+              <td>3.88 ⭐</td>
+            </tr>
+            <tr>
+              <td><strong>Sports Leisure (الرياضة والترفيه)</strong></td>
+              <td>8,641</td>
+              <td>R$ 988,048</td>
+              <td>7.3%</td>
+              <td>R$ 114.34</td>
+              <td>4.11 ⭐</td>
+            </tr>
+            <tr>
+              <td><strong>Computers Accessories (إلكترونيات)</strong></td>
+              <td>7,827</td>
+              <td>R$ 911,954</td>
+              <td>6.7%</td>
+              <td>R$ 116.51</td>
+              <td>3.93 ⭐</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Logistics & Geography -->
+    <div class="slide" id="slide-6">
+      <div class="slide-tag">التقرير 3 | الشحن والمناطق</div>
+      <h2 class="slide-title">التوزيع الجغرافي وسرعة الشحن</h2>
+      <p class="slide-subtitle">هيمنة كاسحة لولاية ساو باولو مقابل تحديات الشحن في المناطق البعيدة</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 0.8rem;">🏙️ ولاية ساو باولو (SP):</h3>
+          <ul class="bullet-list">
+            <li class="bullet-item"><span class="bullet-icon">📦</span> تستحوذ على <strong>41.7% من إجمالي الطلبات</strong> (40,244 طلب).</li>
+            <li class="bullet-item"><span class="bullet-icon">⚡</span> أسرع زمن توصيل: <strong>8.3 أيام فقط</strong>.</li>
+            <li class="bullet-item"><span class="bullet-icon">🎯</span> أعلى نسبة التزام بالموعد: <strong>95.2%</strong>.</li>
+            <li class="bullet-item"><span class="bullet-icon">💵</span> أقل تكلفة شحن بمتوسط <strong>R$ 15</strong>.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--accent-red); margin-bottom: 0.8rem;">⚠️ ولايات الشمال والشمال الشرقي:</h3>
+          <ul class="bullet-list">
+            <li class="bullet-item"><span class="bullet-icon">⏳</span> زمن توصيل طويل يصل إلى <strong>24 إلى 29 يوماً</strong>.</li>
+            <li class="bullet-item"><span class="bullet-icon">💸</span> تكلفة شحن مضاعفة تتجاوز <strong>R$ 40+</strong> للطلب.</li>
+            <li class="bullet-item"><span class="bullet-icon">📉</span> انخفاض نسبة التوصيل في الموعد إلى <strong>75% - 80%</strong>.</li>
+            <li class="bullet-item"><span class="bullet-icon">🏗️</span> <strong>الحل:</strong> إنشاء مستودعات إقليمية في الشمال.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Payment Methods -->
+    <div class="slide" id="slide-7">
+      <div class="slide-tag">التقرير 4 | سلوك الدفع والتقسيط</div>
+      <h2 class="slide-title">طرق الدفع المفضلة لدى المستهلك</h2>
+      <p class="slide-subtitle">البطاقات الائتمانية والتقسيط يقودان 75% من إجمالي حجم التعاملات</p>
+
+      <div class="grid-4">
+        <div class="card" style="border-color: var(--accent-cyan);">
+          <div class="card-title">💳 بطاقات الائتمان</div>
+          <div class="card-value val-blue">75.4%</div>
+          <div class="card-desc">R$ 12.54 Million<br>متوسط 3.5 أقساط<br>سلة: R$ 163.32</div>
+        </div>
+        <div class="card">
+          <div class="card-title">📄 بوليتو (Boleto)</div>
+          <div class="card-value val-green">19.3%</div>
+          <div class="card-desc">R$ 2.87 Million<br>دفع كاش فواتير<br>سلة: R$ 145.03</div>
+        </div>
+        <div class="card">
+          <div class="card-title">🎟️ قسائم (Voucher)</div>
+          <div class="card-value val-amber">2.3%</div>
+          <div class="card-desc">R$ 380 Thousand<br>خصومات وتعويضات<br>سلة: R$ 65.70</div>
+        </div>
+        <div class="card">
+          <div class="card-title">💳 بطاقة خصم مباشر</div>
+          <div class="card-value">1.3%</div>
+          <div class="card-desc">R$ 218 Thousand<br>سحب بنكي مباشر<br>سلة: R$ 142.57</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Reviews & Delay Penalty -->
+    <div class="slide" id="slide-8">
+      <div class="slide-tag">التقرير 5 | رضا العملاء وتأثير التأخير</div>
+      <h2 class="slide-title">أثر التأخير في الشحن على تقييم العميل (CSAT)</h2>
+      <p class="slide-subtitle">التأخير في التسليم يسبب هبوطاً عنيفاً في التقييم بمقدار نجمتين كاملتين!</p>
+
+      <div class="grid-2">
+        <div class="card" style="border-color: var(--accent-green);">
+          <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">🟢 الطلبات المسلمة في الموعد (On-Time)</h3>
+          <div class="card-value val-green" style="font-size: 2.2rem;">4.27 / 5.0 ⭐</div>
+          <p class="card-desc" style="font-size: 1rem; margin-top: 0.5rem;">رضا مرتفع جداً وتجربة تسوق إيجابية تعزز ولاء العميل للمنصة.</p>
+        </div>
+        <div class="card" style="border-color: var(--accent-red);">
+          <h3 style="color: var(--accent-red); margin-bottom: 0.5rem;">🔴 الطلبات المتأخرة عن الموعد (Late Delivery)</h3>
+          <div class="card-value val-red" style="font-size: 2.2rem;">2.27 / 5.0 ⭐</div>
+          <p class="card-desc" style="font-size: 1rem; margin-top: 0.5rem;">عقوبة مباشرة وهبوط حاد بمقدار <strong>-2.0 نجمة كاملة</strong> و70% من العملاء يكتبون شكاوى غاضبة.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Strategic Recommendations -->
+    <div class="slide" id="slide-9">
+      <div class="slide-tag">خطة العمل الاستراتيجية</div>
+      <h2 class="slide-title">التوصيات التنفيذية لزيادة الأرباح والنمو</h2>
+      <p class="slide-subtitle">قرارات مستندة إلى تحليل البيانات لحل المشكلات ورفع كفاءة المنصة</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem;">🚚 1. تطوير الشبكة اللوجستية</h3>
+          <p class="card-desc" style="font-size: 0.95rem;">إنشاء مراكز شحن وتخزين مصغرة (Fulfillment Hubs) في الولايات البعيدة لتقليص زمن الشحن من 28 يوماً إلى أقل من 12 يوماً.</p>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--accent-green); margin-bottom: 0.5rem;">💳 2. تنشيط التقسيط الترويجي</h3>
+          <p class="card-desc" style="font-size: 0.95rem;">تقديم عروض تقسيط بدون فوائد (0% Interest) على الفئات ذات الأسعار المرتفعة مثل الساعات والأجهزة لزيادة حجم السلة (AOV).</p>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--accent-amber); margin-bottom: 0.5rem;">⭐ 3. نظام إنذار استباقي للشحنات</h3>
+          <p class="card-desc" style="font-size: 0.95rem;">إرسال اعتذار وقسيمة خصم تلقائية للعميل عند تأخر الشحنة وقبل أن يكتب تقييماً سلبياً لاحتواء غضبه وحماية التقييم العام.</p>
+        </div>
+        <div class="card">
+          <h3 style="color: var(--accent-cyan); margin-bottom: 0.5rem;">🛍️ 4. ضبط جودة المفروشات والمنزل</h3>
+          <p class="card-desc" style="font-size: 0.95rem;">وضع معايير مطابقة صور وخامات لمنتجات Bed Bath Table لأنها الأكثر مبيعاً ولكنها تسجل تقييماً منخفضاً (3.88).</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>ملف العرض التقديمي PowerPoint متوفر باسم: <strong>Olist_Ecommerce_Presentation.pptx</strong> | شيت الإكسيل: <strong>Olist_Ecommerce_Analytics_Report.xlsx</strong></span>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 9;
+
+    function updateSlide() {
+      document.querySelectorAll('.slide').forEach((s, idx) => {
+        s.classList.toggle('active', idx + 1 === currentSlide);
+      });
+      document.getElementById('slideNum').innerText = `شريحة ${currentSlide} من ${totalSlides}`;
+      document.getElementById('prevBtn').disabled = (currentSlide === 1);
+      document.getElementById('nextBtn').innerText = (currentSlide === totalSlides) ? 'البداية ↺' : 'التالي ▶';
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+      } else {
+        currentSlide = 1;
+      }
+      updateSlide();
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+        prevSlide();
+      }
+    });
+
+    // Initialize Chart
+    window.addEventListener('DOMContentLoaded', () => {
+      const ctx = document.getElementById('revenueChart');
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Jan 17', 'Mar 17', 'May 17', 'Jul 17', 'Sep 17', 'Nov 17 (BF)', 'Jan 18', 'Mar 18', 'May 18', 'Jul 18', 'Aug 18'],
+            datasets: [{
+              label: 'الإيرادات الشهرية (R$ Millions)',
+              data: [0.12, 0.37, 0.50, 0.59, 0.72, 1.15, 1.07, 1.12, 1.15, 1.02, 0.98],
+              borderColor: '#0284c7',
+              backgroundColor: 'rgba(2, 132, 199, 0.15)',
+              fill: true,
+              tension: 0.3,
+              pointBackgroundColor: '#38bdf8',
+              pointRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { labels: { color: '#cbd5e1', font: { family: 'Cairo' } } }
+            },
+            scales: {
+              x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+              y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
