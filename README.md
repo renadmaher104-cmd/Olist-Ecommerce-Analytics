@@ -40,8 +40,7 @@ This project provides comprehensive business insights, performance analytics, an
 ```text
 ├── clean_and_analyze.py                  # End-to-end data cleaning, preprocessing & analytics script
 ├── Olist_Ecommerce_Analytics_Report.xlsx # Comprehensive executive Excel report with KPI summaries
-├── Olist_Executive_Presentation.pptx     # 16:9 Widescreen C-Level PowerPoint presentation (English)
-├── Olist_Executive_Presentation_Arabic.pptx # 16:9 Widescreen Executive Presentation (Arabic Version)
+├── Olist_Executive_Presentation.pptx     # 16:9 Widescreen C-Level PowerPoint presentation
 ├── presentation.html                     # Interactive bilingual HTML presentation dashboard
 ├── .gitignore                            # Standard Git ignore configuration
 └── README.md                             # Full project documentation & insights
